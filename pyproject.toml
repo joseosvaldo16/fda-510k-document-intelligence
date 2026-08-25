@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fda-510k-document-intelligence"
+version = "0.1.0"
+description = "Extract and reconcile FDA 510(k) predicate relationships from PDFs."
+requires-python = ">=3.12"
+dependencies = [
+  "azure-functions>=1.21.3",
+  "azure-identity>=1.19.0",
+  "azure-storage-blob>=12.24.0",
+  "azure-ai-documentintelligence>=1.0.0",
+  "duckdb>=1.1.3",
+  "httpx>=0.28.1",
+  "pdfplumber>=0.11.4",
+  "pypdf>=5.1.0",
+  "pydantic>=2.10.3",
+  "tenacity>=9.0.0",
+]
+
+[project.scripts]
+fda510k = "fda510k.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+packages = ["fda510k"]

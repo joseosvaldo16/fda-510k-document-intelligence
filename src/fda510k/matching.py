@@ -1,48 +1,86 @@
-"""Deterministic extraction and reconciliation of FDA K-numbers."""
+"""Extract explicitly labeled predicate lists and keep reference devices separate."""
 
 import re
-from collections import defaultdict
+from typing import Literal
 
 from .models import MatchStatus, PredicateCandidate, PredicateRelationship
 
 K_NUMBER = re.compile(r"\b[Kk][0-9]{6}\b")
-PREDICATE_CONTEXT = re.compile(r"predicate|substantial(?:ly)?\s+equivalent", re.IGNORECASE)
+SPACED_K_NUMBER = re.compile(r"\b[Kk][ \t]*(?:[0-9][ \t]*){5}[0-9](?![0-9])")
+RELATIONSHIP_HEADING = re.compile(
+    r"^[ \t]*(?:(?:[A-Z]\.)?\d+\.|[IVX]+\.|[A-Z]\.[0-9]*\.?)[ \t]*"
+    r"(?P<numbered>(?:primary |additional |secondary |reference )?predicate(?:\s+devices?)?"
+    r"|reference\s+devices?)"
+    r"|^[ \t]*(?P<plain>(?:primary |additional |secondary |reference )?predicate(?:\s+devices?)?"
+    r"|reference\s+devices?)"
+    r"|^[^\n]*Table\s+\d+:[^\n]*Equivalent Predicates[^\n]*",
+    re.IGNORECASE | re.MULTILINE,
+)
+SECTION_END = re.compile(
+    r"^[ \t]*(?:(?:[A-Z]\.)?\d+\.|[IVX]+\.|[A-Z]\.)?[ \t]*"
+    r"(?:Device\s+(?:Description|The\b)|Device\s*$|Indications|Intended Use|"
+    r"Summary of|Performance|Technological|Comparison|[A-Z]\.\d+\.)",
+    re.IGNORECASE | re.MULTILINE,
+)
+
+
+def normalize_k_numbers(text: str) -> str:
+    """Join whitespace within otherwise valid identifiers; never guess a character."""
+    return SPACED_K_NUMBER.sub(lambda match: re.sub(r"\s", "", match.group()).upper(), text)
 
 
 def extract_predicates(
     source_k_number: str, text_by_page: dict[int, str]
 ) -> list[PredicateRelationship]:
-    """Return evidence-backed relationships without guessing between candidates."""
-    candidates: dict[str, list[PredicateCandidate]] = defaultdict(list)
-    for page, text in text_by_page.items():
-        for match in K_NUMBER.finditer(text):
-            start, end = max(0, match.start() - 100), min(len(text), match.end() + 100)
-            evidence = text[start:end].replace("\n", " ")
-            if PREDICATE_CONTEXT.search(evidence):
-                candidates[match.group().upper()].append(
-                    PredicateCandidate(
-                        k_number=match.group().upper(), page_number=page, evidence=evidence
-                    )
+    relationships: dict[str, PredicateRelationship] = {}
+    for page_number, original_text in text_by_page.items():
+        text = normalize_k_numbers(original_text)
+        headings = list(RELATIONSHIP_HEADING.finditer(text))
+        for index, heading in enumerate(headings):
+            label = heading.group().lower()
+            role: Literal["predicate", "primary", "additional", "reference"] = "predicate"
+            if "reference" in label:
+                role = "reference"
+            elif "primary" in label:
+                role = "primary"
+            elif "additional" in label or "secondary" in label:
+                role = "additional"
+            end = headings[index + 1].start() if index + 1 < len(headings) else len(text)
+            section = text[heading.start() : end]
+            following_heading = SECTION_END.search(section, heading.end() - heading.start())
+            if following_heading:
+                section = section[: following_heading.start()]
+            # Bound an unrecognized section rather than collecting the rest of a long page.
+            section = section[:1800]
+            for match in K_NUMBER.finditer(section):
+                k_number = match.group().upper()
+                if k_number == source_k_number.upper():
+                    continue
+                evidence = PredicateCandidate(
+                    k_number=k_number,
+                    page_number=page_number,
+                    evidence=section.strip(),
                 )
-    if not candidates:
+                existing = relationships.get(k_number)
+                if existing is not None:
+                    existing.evidence.append(evidence)
+                    if role != "predicate" and existing.relationship_type == "predicate":
+                        existing.relationship_type = role
+                    elif role != "predicate" and existing.relationship_type != role:
+                        existing.status = MatchStatus.AMBIGUOUS
+                        existing.review_reason = (
+                            "Conflicting relationship labels in source sections."
+                        )
+                    continue
+                relationships[k_number] = PredicateRelationship(
+                    source_k_number=source_k_number.upper(),
+                    predicate_k_number=k_number,
+                    status=MatchStatus.MATCHED,
+                    relationship_type=role,
+                    evidence=[evidence],
+                )
+    if not relationships:
         return [
             PredicateRelationship(source_k_number=source_k_number, status=MatchStatus.UNMATCHED)
         ]
-    if len(candidates) == 1:
-        k_number, candidate_evidence = next(iter(candidates.items()))
-        return [
-            PredicateRelationship(
-                source_k_number=source_k_number,
-                predicate_k_number=k_number,
-                status=MatchStatus.MATCHED,
-                evidence=candidate_evidence,
-            )
-        ]
-    return [
-        PredicateRelationship(
-            source_k_number=source_k_number,
-            status=MatchStatus.AMBIGUOUS,
-            candidates=sorted(candidates),
-            evidence=[item for values in candidates.values() for item in values],
-        )
-    ]
+    return list(relationships.values())

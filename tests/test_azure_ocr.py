@@ -13,6 +13,7 @@ import pytest
 from pypdf import PdfReader, PdfWriter
 
 from fda510k import azure_di, cli, extractors
+from fda510k.models import OcrResult
 
 
 def make_pdf() -> bytes:
@@ -30,8 +31,8 @@ def test_azure_upload_contains_only_selected_pages_and_preserves_original_page_n
     service_result = SimpleNamespace(
         content="Page two. Page three.",
         pages=[
-            SimpleNamespace(page_number=1, spans=[SimpleNamespace(offset=0, length=9)]),
-            SimpleNamespace(page_number=2, spans=[SimpleNamespace(offset=10, length=11)]),
+            SimpleNamespace(page_number=1, words=[], spans=[SimpleNamespace(offset=0, length=9)]),
+            SimpleNamespace(page_number=2, words=[], spans=[SimpleNamespace(offset=10, length=11)]),
         ],
     )
     client = Mock()
@@ -44,7 +45,7 @@ def test_azure_upload_contains_only_selected_pages_and_preserves_original_page_n
     uploaded_request = client.begin_analyze_document.call_args.args[1]
     uploaded_pdf = PdfReader(BytesIO(uploaded_request.bytes_source))
     assert [int(page.mediabox.width) for page in uploaded_pdf.pages] == [200, 300]
-    assert result == {2: "Page two.", 3: "Page three."}
+    assert result.text_by_page == {2: "Page two.", 3: "Page three."}
     assert client.begin_analyze_document.call_args.kwargs["string_index_type"] == "unicodeCodePoint"
 
 
@@ -53,7 +54,7 @@ def test_empty_page_selection_does_not_call_azure(monkeypatch: pytest.MonkeyPatc
     monkeypatch.setattr(azure_di, "AzureClient", Mock(return_value=client))
     extractor = azure_di.AzureLayoutExtractor("https://example.cognitiveservices.azure.com/")
 
-    assert extractor.extract_layout(make_pdf(), page_numbers=[]) == {}
+    assert extractor.extract_layout(make_pdf(), page_numbers=[]).text_by_page == {}
     client.begin_analyze_document.assert_not_called()
 
 
@@ -80,7 +81,7 @@ def test_fallback_sends_only_weak_pages_and_keeps_existing_text(
         extractors.PdfExtractor, "_enrich_with_pdfplumber", staticmethod(lambda _, text: text)
     )
     cloud = Mock()
-    cloud.extract_layout.return_value = {2: "Predicate K123456"}
+    cloud.extract_layout.return_value = OcrResult(text_by_page={2: "Predicate K123456"})
 
     result = extractors.PdfExtractor(cloud).extract("example.pdf", "digest", b"example")
 
@@ -107,7 +108,7 @@ def test_cli_uses_azure_by_default_from_local_settings(
     )
     Path("example.pdf").write_bytes(make_pdf())
     cloud = Mock()
-    cloud.extract_layout.return_value = {1: "Predicate K123456"}
+    cloud.extract_layout.return_value = OcrResult(text_by_page={1: "Predicate K123456"})
     constructor = Mock(return_value=cloud)
     monkeypatch.setattr(cli, "AzureLayoutExtractor", constructor)
     monkeypatch.setattr("sys.argv", ["fda510k", "example.pdf", "--k-number", "K654321"])

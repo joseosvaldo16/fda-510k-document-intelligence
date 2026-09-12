@@ -1,12 +1,25 @@
 """Layered PDF extraction, escalating only when native text is weak."""
 
+import re
 from io import BytesIO
 from typing import Protocol
 
 import pdfplumber
 from pypdf import PdfReader
 
-from .models import ExtractionResult
+from .models import ExtractionResult, OcrResult
+
+SUSPECT_IDENTIFIER = re.compile(r"\b[Kk][(]?[0-9OoIiLl]{5,8}\b|\b[Kk]\d[ \t]+\d{4,5}\b")
+
+
+def needs_ocr(text: str) -> bool:
+    """Catch empty pages and visibly malformed identifiers, even on text-heavy pages."""
+    if len(text) < 40:
+        return True
+    for match in SUSPECT_IDENTIFIER.finditer(text):
+        if not re.fullmatch(r"[Kk][0-9]{6}", match.group()):
+            return True
+    return False
 
 
 class DocumentIntelligenceClient(Protocol):
@@ -14,7 +27,7 @@ class DocumentIntelligenceClient(Protocol):
 
     def extract_layout(
         self, content: bytes, page_numbers: list[int] | None = None
-    ) -> dict[int, str]: ...
+    ) -> OcrResult: ...
 
 
 class PdfExtractor:
@@ -30,11 +43,15 @@ class PdfExtractor:
             for index, page in enumerate(reader.pages)
         }
         text_by_page = self._enrich_with_pdfplumber(content, pypdf_text)
-        weak = [page for page, text in text_by_page.items() if len(text) < 40]
+        weak = [page for page, text in text_by_page.items() if needs_ocr(text)]
         used_di = False
+        ocr_words = []
         if weak and self.document_intelligence:
-            layout_text = self.document_intelligence.extract_layout(content, page_numbers=weak)
-            text_by_page.update({page: layout_text[page] for page in weak if layout_text.get(page)})
+            layout = self.document_intelligence.extract_layout(content, page_numbers=weak)
+            text_by_page.update(
+                {page: layout.text_by_page[page] for page in weak if layout.text_by_page.get(page)}
+            )
+            ocr_words = layout.words
             used_di = True
         extractor = "azure-layout" if used_di else "pypdf/pdfplumber"
         return ExtractionResult(
@@ -44,6 +61,7 @@ class PdfExtractor:
             page_count=len(reader.pages),
             text_by_page=text_by_page,
             used_document_intelligence=used_di,
+            ocr_words=ocr_words,
         )
 
     @staticmethod

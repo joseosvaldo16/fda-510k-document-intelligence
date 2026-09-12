@@ -9,6 +9,7 @@ import duckdb
 
 from .azure_di import AzureLayoutExtractor
 from .extractors import PdfExtractor
+from .llm import LlmReviewer
 from .pipeline import ProcessingPipeline
 from .storage import LocalAuditStore
 
@@ -25,8 +26,11 @@ def main() -> None:
     parser.add_argument(
         "--force", action="store_true", help="Process a previously recorded PDF again."
     )
+    parser.add_argument("--matching", choices=["rules", "llm"], default="rules")
     args = parser.parse_args()
     document_intelligence = None
+    reviewer = None
+    settings = {}
     if not args.local_only:
         endpoint = os.getenv("DOCUMENT_INTELLIGENCE_ENDPOINT")
         key = os.getenv("DOCUMENT_INTELLIGENCE_KEY")
@@ -44,8 +48,16 @@ def main() -> None:
                 "or use --local-only."
             )
         document_intelligence = AzureLayoutExtractor(endpoint, key)
+    if args.matching == "llm":
+        if args.local_only:
+            parser.error("--local-only cannot be combined with --matching llm.")
+        llm_endpoint = os.getenv("AZURE_OPENAI_ENDPOINT") or settings.get("AZURE_OPENAI_ENDPOINT")
+        deployment = os.getenv("AZURE_OPENAI_DEPLOYMENT") or settings.get("AZURE_OPENAI_DEPLOYMENT")
+        if not llm_endpoint or not deployment:
+            parser.error("LLM matching requires AZURE_OPENAI_ENDPOINT and AZURE_OPENAI_DEPLOYMENT.")
+        reviewer = LlmReviewer(llm_endpoint, deployment)
     store = LocalAuditStore(args.audit_file)
-    result = ProcessingPipeline(PdfExtractor(document_intelligence), store).process(
+    result = ProcessingPipeline(PdfExtractor(document_intelligence), store, reviewer).process(
         args.pdf.name, args.k_number, args.pdf.read_bytes(), force=args.force
     )
     print(json.dumps(result, indent=2))

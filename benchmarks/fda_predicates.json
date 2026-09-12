@@ -1,0 +1,272 @@
+{
+  "version": 1,
+  "review_date": "2026-09-12",
+  "review_method": "Source-page visual review of predicate lists and tables; all pages checked for the two documents without numbered predicates. One development review, not independent adjudication. Labels fixed before LLM evaluation.",
+  "definitions": {
+    "predicate": "Explicitly listed predicate with no primary/additional distinction.",
+    "primary": "Explicit primary predicate.",
+    "additional": "Explicit additional or secondary predicate.",
+    "reference": "Reference device or reference predicate, retained separately and excluded from predicate-only metrics.",
+    "empty": "No numbered predicate/reference identified in the available PDF; not proof the device has no predicate."
+  },
+  "documents": [
+    {
+      "source_k_number": "K102429",
+      "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf10/K102429.pdf",
+      "sha256": "6a08ff9112255933827ab565ce12e55ac0fc692a478354d07310a89b7b7b45eb",
+      "relationships": [
+        {
+          "k_number": "K091243",
+          "relationship_type": "predicate",
+          "page_number": 1
+        },
+        {
+          "k_number": "K082320",
+          "relationship_type": "predicate",
+          "page_number": 1
+        }
+      ],
+      "reviewed_pages": [
+        1
+      ]
+    },
+    {
+      "source_k_number": "K111372",
+      "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf11/K111372.pdf",
+      "sha256": "3beba8453369aacd8f3f835523242fbe9fc64cbee99093c950fe74b65635aaa0",
+      "relationships": [
+        {
+          "k_number": "K043272",
+          "relationship_type": "predicate",
+          "page_number": 1
+        },
+        {
+          "k_number": "K002901",
+          "relationship_type": "predicate",
+          "page_number": 1
+        },
+        {
+          "k_number": "K092205",
+          "relationship_type": "predicate",
+          "page_number": 1
+        }
+      ],
+      "reviewed_pages": [
+        1
+      ]
+    },
+    {
+      "source_k_number": "K134031",
+      "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf13/K134031.pdf",
+      "sha256": "e569be9a4191e1a10fae23eeed0ef7e7223fc7838c9a45d3c3b47395d2265eec",
+      "relationships": [
+        {
+          "k_number": "K130391",
+          "relationship_type": "predicate",
+          "page_number": 1
+        },
+        {
+          "k_number": "K102725",
+          "relationship_type": "predicate",
+          "page_number": 1
+        },
+        {
+          "k_number": "K111295",
+          "relationship_type": "predicate",
+          "page_number": 1
+        },
+        {
+          "k_number": "K083127",
+          "relationship_type": "predicate",
+          "page_number": 1
+        }
+      ],
+      "reviewed_pages": [
+        1
+      ]
+    },
+    {
+      "source_k_number": "K140814",
+      "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf14/K140814.pdf",
+      "sha256": "ece8f19284e9885734ec9ce6309d76770e7cc22996cadb949c4c03727e1a8232",
+      "relationships": [
+        {
+          "k_number": "K132886",
+          "relationship_type": "predicate",
+          "page_number": 2
+        },
+        {
+          "k_number": "K123055",
+          "relationship_type": "predicate",
+          "page_number": 2
+        },
+        {
+          "k_number": "K090675",
+          "relationship_type": "predicate",
+          "page_number": 2
+        }
+      ],
+      "reviewed_pages": [
+        2
+      ]
+    },
+    {
+      "source_k_number": "K170381",
+      "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf17/K170381.pdf",
+      "sha256": "e3b44267e0bc78ece56f4161b2ec8576a5fff1021a7680063523e3072c88a5f1",
+      "relationships": [
+        {
+          "k_number": "K132974",
+          "relationship_type": "predicate",
+          "page_number": 4
+        }
+      ],
+      "reviewed_pages": [
+        4
+      ]
+    },
+    {
+      "source_k_number": "K180583",
+      "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf18/K180583.pdf",
+      "sha256": "ee641616b2a87157a33a5367dae7b52cfb59146d2700b27f8dbf4a7d0e6a7498",
+      "relationships": [
+        {
+          "k_number": "K130423",
+          "relationship_type": "predicate",
+          "page_number": 4
+        }
+      ],
+      "reviewed_pages": [
+        4
+      ]
+    },
+    {
+      "source_k_number": "K213456",
+      "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf21/K213456.pdf",
+      "sha256": "23f25c6e53de8038904b85a4fe018ab4eacc7d75693a2be272b5ae9ca17e4456",
+      "relationships": [
+        {
+          "k_number": "K160702",
+          "relationship_type": "primary",
+          "page_number": 4
+        },
+        {
+          "k_number": "K080646",
+          "relationship_type": "additional",
+          "page_number": 4
+        },
+        {
+          "k_number": "K160313",
+          "relationship_type": "reference",
+          "page_number": 4
+        },
+        {
+          "k_number": "K191074",
+          "relationship_type": "reference",
+          "page_number": 4
+        }
+      ],
+      "reviewed_pages": [
+        4
+      ]
+    },
+    {
+      "source_k_number": "K220001",
+      "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf22/K220001.pdf",
+      "sha256": "9296b39831ecae1d5d9e0ed4628a8e8ccf7686beb00ccc7c7f8fdc9ab917bf92",
+      "relationships": [],
+      "reviewed_pages": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "source_k_number": "K221537",
+      "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf22/K221537.pdf",
+      "sha256": "9992b0a23b11de6bdece6408733f19d045d7b2b4026a22a95ce9887266ae960e",
+      "relationships": [
+        {
+          "k_number": "K200908",
+          "relationship_type": "primary",
+          "page_number": 4
+        },
+        {
+          "k_number": "K212660",
+          "relationship_type": "reference",
+          "page_number": 4
+        },
+        {
+          "k_number": "K173784",
+          "relationship_type": "reference",
+          "page_number": 4
+        }
+      ],
+      "reviewed_pages": [
+        4
+      ]
+    },
+    {
+      "source_k_number": "K221887",
+      "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf22/K221887.pdf",
+      "sha256": "0485238c3c807641690712da5c7d9586410b4f6822815550f38503d22f474406",
+      "relationships": [
+        {
+          "k_number": "K190942",
+          "relationship_type": "predicate",
+          "page_number": 4
+        }
+      ],
+      "reviewed_pages": [
+        4
+      ]
+    },
+    {
+      "source_k_number": "K230001",
+      "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf23/K230001.pdf",
+      "sha256": "c96bc1859f88e967bd5e6f63b457526c1f7ced0faaf54035eef1d6f98a26b006",
+      "relationships": [],
+      "reviewed_pages": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "source_k_number": "K230857",
+      "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf23/K230857.pdf",
+      "sha256": "c219a43b0705e4f54699396fd2839e1d724e952a00fb0c2db0d5433069c4eeea",
+      "relationships": [
+        {
+          "k_number": "K180818",
+          "relationship_type": "primary",
+          "page_number": 4
+        },
+        {
+          "k_number": "K221047",
+          "relationship_type": "additional",
+          "page_number": 4
+        }
+      ],
+      "reviewed_pages": [
+        4
+      ]
+    },
+    {
+      "source_k_number": "K232692",
+      "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf23/K232692.pdf",
+      "sha256": "a1cdbde4fb3558e48de63ad8b8493fba5d68bf98c59d07ffe6e8c27a3ba9183b",
+      "relationships": [
+        {
+          "k_number": "K220227",
+          "relationship_type": "predicate",
+          "page_number": 5
+        }
+      ],
+      "reviewed_pages": [
+        5
+      ]
+    }
+  ]
+}

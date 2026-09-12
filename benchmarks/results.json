@@ -1,0 +1,1181 @@
+{
+  "scope": "Development sample, 13 documents; not held-out. References are separate from predicates. All methods use the same reviewed labels; both cloud methods use the same saved Azure extraction.",
+  "runs": [
+    {
+      "generated_at": "2026-09-12T20:19:54.140148+00:00",
+      "method": "legacy",
+      "ocr_enabled": false,
+      "model": null,
+      "labels_sha256": "1eacc5ba6e83251ca20032794f265971d05dd3dcb6126a06bf3e038284ba9aff",
+      "documents": 13,
+      "true_positives": 13,
+      "false_positives": 7,
+      "false_negatives": 8,
+      "precision": 0.65,
+      "recall": 0.6190476190476191,
+      "f1": 0.6341463414634146,
+      "exact_relationship_documents": 4,
+      "reference_scores": {
+        "true_positives": 0,
+        "false_positives": 0,
+        "false_negatives": 4
+      },
+      "rows": [
+        {
+          "source_k_number": "K102429",
+          "true_positives": 2,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "reference_scores": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0
+          },
+          "predicted_predicates": [
+            "K082320",
+            "K091243"
+          ],
+          "predicted_references": [],
+          "exact_relationships": false,
+          "review_count": 1,
+          "used_ocr": false,
+          "elapsed_seconds": 0.03,
+          "review_notes": []
+        },
+        {
+          "source_k_number": "K111372",
+          "true_positives": 1,
+          "false_positives": 0,
+          "false_negatives": 2,
+          "reference_scores": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0
+          },
+          "predicted_predicates": [
+            "K043272"
+          ],
+          "predicted_references": [],
+          "exact_relationships": false,
+          "review_count": 0,
+          "used_ocr": false,
+          "elapsed_seconds": 0.02,
+          "review_notes": []
+        },
+        {
+          "source_k_number": "K134031",
+          "true_positives": 1,
+          "false_positives": 0,
+          "false_negatives": 3,
+          "reference_scores": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0
+          },
+          "predicted_predicates": [
+            "K130391"
+          ],
+          "predicted_references": [],
+          "exact_relationships": false,
+          "review_count": 0,
+          "used_ocr": false,
+          "elapsed_seconds": 0.02,
+          "review_notes": []
+        },
+        {
+          "source_k_number": "K140814",
+          "true_positives": 0,
+          "false_positives": 1,
+          "false_negatives": 3,
+          "reference_scores": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0
+          },
+          "predicted_predicates": [
+            "K140814"
+          ],
+          "predicted_references": [],
+          "exact_relationships": false,
+          "review_count": 0,
+          "used_ocr": false,
+          "elapsed_seconds": 0.03,
+          "review_notes": []
+        },
+        {
+          "source_k_number": "K170381",
+          "true_positives": 1,
+          "false_positives": 1,
+          "false_negatives": 0,
+          "reference_scores": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0
+          },
+          "predicted_predicates": [
+            "K132974",
+            "K170381"
+          ],
+          "predicted_references": [],
+          "exact_relationships": false,
+          "review_count": 1,
+          "used_ocr": false,
+          "elapsed_seconds": 0.07,
+          "review_notes": []
+        },
+        {
+          "source_k_number": "K180583",
+          "true_positives": 1,
+          "false_positives": 1,
+          "false_negatives": 0,
+          "reference_scores": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0
+          },
+          "predicted_predicates": [
+            "K130423",
+            "K180583"
+          ],
+          "predicted_references": [],
+          "exact_relationships": false,
+          "review_count": 1,
+          "used_ocr": false,
+          "elapsed_seconds": 0.06,
+          "review_notes": []
+        },
+        {
+          "source_k_number": "K213456",
+          "true_positives": 2,
+          "false_positives": 1,
+          "false_negatives": 0,
+          "reference_scores": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 2
+          },
+          "predicted_predicates": [
+            "K080646",
+            "K160313",
+            "K160702"
+          ],
+          "predicted_references": [],
+          "exact_relationships": false,
+          "review_count": 1,
+          "used_ocr": false,
+          "elapsed_seconds": 0.05,
+          "review_notes": []
+        },
+        {
+          "source_k_number": "K220001",
+          "true_positives": 0,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "reference_scores": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0
+          },
+          "predicted_predicates": [],
+          "predicted_references": [],
+          "exact_relationships": true,
+          "review_count": 0,
+          "used_ocr": false,
+          "elapsed_seconds": 0.03,
+          "review_notes": []
+        },
+        {
+          "source_k_number": "K221537",
+          "true_positives": 1,
+          "false_positives": 2,
+          "false_negatives": 0,
+          "reference_scores": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 2
+          },
+          "predicted_predicates": [
+            "K173784",
+            "K200908",
+            "K212660"
+          ],
+          "predicted_references": [],
+          "exact_relationships": false,
+          "review_count": 1,
+          "used_ocr": false,
+          "elapsed_seconds": 0.73,
+          "review_notes": []
+        },
+        {
+          "source_k_number": "K221887",
+          "true_positives": 1,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "reference_scores": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0
+          },
+          "predicted_predicates": [
+            "K190942"
+          ],
+          "predicted_references": [],
+          "exact_relationships": true,
+          "review_count": 0,
+          "used_ocr": false,
+          "elapsed_seconds": 0.68,
+          "review_notes": []
+        },
+        {
+          "source_k_number": "K230001",
+          "true_positives": 0,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "reference_scores": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0
+          },
+          "predicted_predicates": [],
+          "predicted_references": [],
+          "exact_relationships": true,
+          "review_count": 0,
+          "used_ocr": false,
+          "elapsed_seconds": 0.02,
+          "review_notes": []
+        },
+        {
+          "source_k_number": "K230857",
+          "true_positives": 2,
+          "false_positives": 1,
+          "false_negatives": 0,
+          "reference_scores": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0
+          },
+          "predicted_predicates": [
+            "K180818",
+            "K221047",
+            "K230857"
+          ],
+          "predicted_references": [],
+          "exact_relationships": false,
+          "review_count": 1,
+          "used_ocr": false,
+          "elapsed_seconds": 0.05,
+          "review_notes": []
+        },
+        {
+          "source_k_number": "K232692",
+          "true_positives": 1,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "reference_scores": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0
+          },
+          "predicted_predicates": [
+            "K220227"
+          ],
+          "predicted_references": [],
+          "exact_relationships": true,
+          "review_count": 0,
+          "used_ocr": false,
+          "elapsed_seconds": 0.07,
+          "review_notes": []
+        }
+      ]
+    },
+    {
+      "generated_at": "2026-09-12T20:23:31.912783+00:00",
+      "method": "rules",
+      "ocr_enabled": false,
+      "reused_extraction": false,
+      "model": null,
+      "labels_sha256": "1eacc5ba6e83251ca20032794f265971d05dd3dcb6126a06bf3e038284ba9aff",
+      "documents": 13,
+      "true_positives": 18,
+      "false_positives": 0,
+      "false_negatives": 3,
+      "precision": 1.0,
+      "recall": 0.8571428571428571,
+      "f1": 0.9230769230769231,
+      "exact_relationship_documents": 11,
+      "reference_scores": {
+        "true_positives": 4,
+        "false_positives": 0,
+        "false_negatives": 0
+      },
+      "rows": [
+        {
+          "source_k_number": "K102429",
+          "true_positives": 2,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "reference_scores": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0
+          },
+          "predicted_predicates": [
+            "K082320",
+            "K091243"
+          ],
+          "predicted_references": [],
+          "exact_relationships": true,
+          "review_count": 0,
+          "used_ocr": false,
+          "elapsed_seconds": 0.03,
+          "review_notes": []
+        },
+        {
+          "source_k_number": "K111372",
+          "true_positives": 3,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "reference_scores": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0
+          },
+          "predicted_predicates": [
+            "K002901",
+            "K043272",
+            "K092205"
+          ],
+          "predicted_references": [],
+          "exact_relationships": true,
+          "review_count": 0,
+          "used_ocr": false,
+          "elapsed_seconds": 0.03,
+          "review_notes": []
+        },
+        {
+          "source_k_number": "K134031",
+          "true_positives": 3,
+          "false_positives": 0,
+          "false_negatives": 1,
+          "reference_scores": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0
+          },
+          "predicted_predicates": [
+            "K083127",
+            "K102725",
+            "K130391"
+          ],
+          "predicted_references": [],
+          "exact_relationships": false,
+          "review_count": 0,
+          "used_ocr": false,
+          "elapsed_seconds": 0.03,
+          "review_notes": []
+        },
+        {
+          "source_k_number": "K140814",
+          "true_positives": 1,
+          "false_positives": 0,
+          "false_negatives": 2,
+          "reference_scores": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0
+          },
+          "predicted_predicates": [
+            "K090675"
+          ],
+          "predicted_references": [],
+          "exact_relationships": false,
+          "review_count": 0,
+          "used_ocr": false,
+          "elapsed_seconds": 0.03,
+          "review_notes": []
+        },
+        {
+          "source_k_number": "K170381",
+          "true_positives": 1,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "reference_scores": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0
+          },
+          "predicted_predicates": [
+            "K132974"
+          ],
+          "predicted_references": [],
+          "exact_relationships": true,
+          "review_count": 0,
+          "used_ocr": false,
+          "elapsed_seconds": 0.07,
+          "review_notes": []
+        },
+        {
+          "source_k_number": "K180583",
+          "true_positives": 1,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "reference_scores": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0
+          },
+          "predicted_predicates": [
+            "K130423"
+          ],
+          "predicted_references": [],
+          "exact_relationships": true,
+          "review_count": 0,
+          "used_ocr": false,
+          "elapsed_seconds": 0.06,
+          "review_notes": []
+        },
+        {
+          "source_k_number": "K213456",
+          "true_positives": 2,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "reference_scores": {
+            "true_positives": 2,
+            "false_positives": 0,
+            "false_negatives": 0
+          },
+          "predicted_predicates": [
+            "K080646",
+            "K160702"
+          ],
+          "predicted_references": [
+            "K160313",
+            "K191074"
+          ],
+          "exact_relationships": true,
+          "review_count": 0,
+          "used_ocr": false,
+          "elapsed_seconds": 0.05,
+          "review_notes": []
+        },
+        {
+          "source_k_number": "K220001",
+          "true_positives": 0,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "reference_scores": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0
+          },
+          "predicted_predicates": [],
+          "predicted_references": [],
+          "exact_relationships": true,
+          "review_count": 0,
+          "used_ocr": false,
+          "elapsed_seconds": 0.03,
+          "review_notes": []
+        },
+        {
+          "source_k_number": "K221537",
+          "true_positives": 1,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "reference_scores": {
+            "true_positives": 2,
+            "false_positives": 0,
+            "false_negatives": 0
+          },
+          "predicted_predicates": [
+            "K200908"
+          ],
+          "predicted_references": [
+            "K173784",
+            "K212660"
+          ],
+          "exact_relationships": true,
+          "review_count": 0,
+          "used_ocr": false,
+          "elapsed_seconds": 0.75,
+          "review_notes": []
+        },
+        {
+          "source_k_number": "K221887",
+          "true_positives": 1,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "reference_scores": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0
+          },
+          "predicted_predicates": [
+            "K190942"
+          ],
+          "predicted_references": [],
+          "exact_relationships": true,
+          "review_count": 0,
+          "used_ocr": false,
+          "elapsed_seconds": 0.7,
+          "review_notes": []
+        },
+        {
+          "source_k_number": "K230001",
+          "true_positives": 0,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "reference_scores": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0
+          },
+          "predicted_predicates": [],
+          "predicted_references": [],
+          "exact_relationships": true,
+          "review_count": 0,
+          "used_ocr": false,
+          "elapsed_seconds": 0.02,
+          "review_notes": []
+        },
+        {
+          "source_k_number": "K230857",
+          "true_positives": 2,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "reference_scores": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0
+          },
+          "predicted_predicates": [
+            "K180818",
+            "K221047"
+          ],
+          "predicted_references": [],
+          "exact_relationships": true,
+          "review_count": 0,
+          "used_ocr": false,
+          "elapsed_seconds": 0.05,
+          "review_notes": []
+        },
+        {
+          "source_k_number": "K232692",
+          "true_positives": 1,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "reference_scores": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0
+          },
+          "predicted_predicates": [
+            "K220227"
+          ],
+          "predicted_references": [],
+          "exact_relationships": true,
+          "review_count": 0,
+          "used_ocr": false,
+          "elapsed_seconds": 0.07,
+          "review_notes": []
+        }
+      ]
+    },
+    {
+      "generated_at": "2026-09-12T20:23:28.552088+00:00",
+      "method": "rules",
+      "ocr_enabled": true,
+      "reused_extraction": true,
+      "model": null,
+      "labels_sha256": "1eacc5ba6e83251ca20032794f265971d05dd3dcb6126a06bf3e038284ba9aff",
+      "documents": 13,
+      "true_positives": 21,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "exact_relationship_documents": 13,
+      "reference_scores": {
+        "true_positives": 4,
+        "false_positives": 0,
+        "false_negatives": 0
+      },
+      "rows": [
+        {
+          "source_k_number": "K102429",
+          "true_positives": 2,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "reference_scores": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0
+          },
+          "predicted_predicates": [
+            "K082320",
+            "K091243"
+          ],
+          "predicted_references": [],
+          "exact_relationships": true,
+          "review_count": 0,
+          "used_ocr": false,
+          "elapsed_seconds": 0.0,
+          "review_notes": []
+        },
+        {
+          "source_k_number": "K111372",
+          "true_positives": 3,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "reference_scores": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0
+          },
+          "predicted_predicates": [
+            "K002901",
+            "K043272",
+            "K092205"
+          ],
+          "predicted_references": [],
+          "exact_relationships": true,
+          "review_count": 0,
+          "used_ocr": true,
+          "elapsed_seconds": 0.0,
+          "review_notes": []
+        },
+        {
+          "source_k_number": "K134031",
+          "true_positives": 4,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "reference_scores": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0
+          },
+          "predicted_predicates": [
+            "K083127",
+            "K102725",
+            "K111295",
+            "K130391"
+          ],
+          "predicted_references": [],
+          "exact_relationships": true,
+          "review_count": 0,
+          "used_ocr": true,
+          "elapsed_seconds": 0.0,
+          "review_notes": []
+        },
+        {
+          "source_k_number": "K140814",
+          "true_positives": 3,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "reference_scores": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0
+          },
+          "predicted_predicates": [
+            "K090675",
+            "K123055",
+            "K132886"
+          ],
+          "predicted_references": [],
+          "exact_relationships": true,
+          "review_count": 0,
+          "used_ocr": true,
+          "elapsed_seconds": 0.0,
+          "review_notes": []
+        },
+        {
+          "source_k_number": "K170381",
+          "true_positives": 1,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "reference_scores": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0
+          },
+          "predicted_predicates": [
+            "K132974"
+          ],
+          "predicted_references": [],
+          "exact_relationships": true,
+          "review_count": 0,
+          "used_ocr": false,
+          "elapsed_seconds": 0.0,
+          "review_notes": []
+        },
+        {
+          "source_k_number": "K180583",
+          "true_positives": 1,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "reference_scores": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0
+          },
+          "predicted_predicates": [
+            "K130423"
+          ],
+          "predicted_references": [],
+          "exact_relationships": true,
+          "review_count": 0,
+          "used_ocr": false,
+          "elapsed_seconds": 0.0,
+          "review_notes": []
+        },
+        {
+          "source_k_number": "K213456",
+          "true_positives": 2,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "reference_scores": {
+            "true_positives": 2,
+            "false_positives": 0,
+            "false_negatives": 0
+          },
+          "predicted_predicates": [
+            "K080646",
+            "K160702"
+          ],
+          "predicted_references": [
+            "K160313",
+            "K191074"
+          ],
+          "exact_relationships": true,
+          "review_count": 0,
+          "used_ocr": false,
+          "elapsed_seconds": 0.0,
+          "review_notes": []
+        },
+        {
+          "source_k_number": "K220001",
+          "true_positives": 0,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "reference_scores": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0
+          },
+          "predicted_predicates": [],
+          "predicted_references": [],
+          "exact_relationships": true,
+          "review_count": 0,
+          "used_ocr": false,
+          "elapsed_seconds": 0.0,
+          "review_notes": []
+        },
+        {
+          "source_k_number": "K221537",
+          "true_positives": 1,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "reference_scores": {
+            "true_positives": 2,
+            "false_positives": 0,
+            "false_negatives": 0
+          },
+          "predicted_predicates": [
+            "K200908"
+          ],
+          "predicted_references": [
+            "K173784",
+            "K212660"
+          ],
+          "exact_relationships": true,
+          "review_count": 0,
+          "used_ocr": true,
+          "elapsed_seconds": 0.0,
+          "review_notes": []
+        },
+        {
+          "source_k_number": "K221887",
+          "true_positives": 1,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "reference_scores": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0
+          },
+          "predicted_predicates": [
+            "K190942"
+          ],
+          "predicted_references": [],
+          "exact_relationships": true,
+          "review_count": 0,
+          "used_ocr": true,
+          "elapsed_seconds": 0.0,
+          "review_notes": []
+        },
+        {
+          "source_k_number": "K230001",
+          "true_positives": 0,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "reference_scores": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0
+          },
+          "predicted_predicates": [],
+          "predicted_references": [],
+          "exact_relationships": true,
+          "review_count": 0,
+          "used_ocr": false,
+          "elapsed_seconds": 0.0,
+          "review_notes": []
+        },
+        {
+          "source_k_number": "K230857",
+          "true_positives": 2,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "reference_scores": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0
+          },
+          "predicted_predicates": [
+            "K180818",
+            "K221047"
+          ],
+          "predicted_references": [],
+          "exact_relationships": true,
+          "review_count": 0,
+          "used_ocr": false,
+          "elapsed_seconds": 0.0,
+          "review_notes": []
+        },
+        {
+          "source_k_number": "K232692",
+          "true_positives": 1,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "reference_scores": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0
+          },
+          "predicted_predicates": [
+            "K220227"
+          ],
+          "predicted_references": [],
+          "exact_relationships": true,
+          "review_count": 0,
+          "used_ocr": true,
+          "elapsed_seconds": 0.0,
+          "review_notes": []
+        }
+      ]
+    },
+    {
+      "generated_at": "2026-09-12T20:23:00.523247+00:00",
+      "method": "llm",
+      "ocr_enabled": true,
+      "reused_extraction": true,
+      "model": "gpt-5-mini",
+      "labels_sha256": "1eacc5ba6e83251ca20032794f265971d05dd3dcb6126a06bf3e038284ba9aff",
+      "documents": 13,
+      "true_positives": 20,
+      "false_positives": 0,
+      "false_negatives": 1,
+      "precision": 1.0,
+      "recall": 0.9523809523809523,
+      "f1": 0.975609756097561,
+      "exact_relationship_documents": 12,
+      "reference_scores": {
+        "true_positives": 4,
+        "false_positives": 0,
+        "false_negatives": 0
+      },
+      "rows": [
+        {
+          "source_k_number": "K102429",
+          "true_positives": 2,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "reference_scores": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0
+          },
+          "predicted_predicates": [
+            "K082320",
+            "K091243"
+          ],
+          "predicted_references": [],
+          "exact_relationships": true,
+          "review_count": 0,
+          "used_ocr": false,
+          "elapsed_seconds": 5.73,
+          "review_notes": []
+        },
+        {
+          "source_k_number": "K111372",
+          "true_positives": 3,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "reference_scores": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0
+          },
+          "predicted_predicates": [
+            "K002901",
+            "K043272",
+            "K092205"
+          ],
+          "predicted_references": [],
+          "exact_relationships": true,
+          "review_count": 0,
+          "used_ocr": true,
+          "elapsed_seconds": 2.61,
+          "review_notes": []
+        },
+        {
+          "source_k_number": "K134031",
+          "true_positives": 4,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "reference_scores": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0
+          },
+          "predicted_predicates": [
+            "K083127",
+            "K102725",
+            "K111295",
+            "K130391"
+          ],
+          "predicted_references": [],
+          "exact_relationships": true,
+          "review_count": 0,
+          "used_ocr": true,
+          "elapsed_seconds": 4.88,
+          "review_notes": []
+        },
+        {
+          "source_k_number": "K140814",
+          "true_positives": 3,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "reference_scores": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0
+          },
+          "predicted_predicates": [
+            "K090675",
+            "K123055",
+            "K132886"
+          ],
+          "predicted_references": [],
+          "exact_relationships": true,
+          "review_count": 0,
+          "used_ocr": true,
+          "elapsed_seconds": 3.86,
+          "review_notes": []
+        },
+        {
+          "source_k_number": "K170381",
+          "true_positives": 0,
+          "false_positives": 0,
+          "false_negatives": 1,
+          "reference_scores": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0
+          },
+          "predicted_predicates": [],
+          "predicted_references": [],
+          "exact_relationships": false,
+          "review_count": 1,
+          "used_ocr": false,
+          "elapsed_seconds": 4.56,
+          "review_notes": []
+        },
+        {
+          "source_k_number": "K180583",
+          "true_positives": 1,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "reference_scores": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0
+          },
+          "predicted_predicates": [
+            "K130423"
+          ],
+          "predicted_references": [],
+          "exact_relationships": true,
+          "review_count": 0,
+          "used_ocr": false,
+          "elapsed_seconds": 2.47,
+          "review_notes": []
+        },
+        {
+          "source_k_number": "K213456",
+          "true_positives": 2,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "reference_scores": {
+            "true_positives": 2,
+            "false_positives": 0,
+            "false_negatives": 0
+          },
+          "predicted_predicates": [
+            "K080646",
+            "K160702"
+          ],
+          "predicted_references": [
+            "K160313",
+            "K191074"
+          ],
+          "exact_relationships": true,
+          "review_count": 0,
+          "used_ocr": false,
+          "elapsed_seconds": 5.57,
+          "review_notes": []
+        },
+        {
+          "source_k_number": "K220001",
+          "true_positives": 0,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "reference_scores": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0
+          },
+          "predicted_predicates": [],
+          "predicted_references": [],
+          "exact_relationships": true,
+          "review_count": 0,
+          "used_ocr": false,
+          "elapsed_seconds": 1.78,
+          "review_notes": []
+        },
+        {
+          "source_k_number": "K221537",
+          "true_positives": 1,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "reference_scores": {
+            "true_positives": 2,
+            "false_positives": 0,
+            "false_negatives": 0
+          },
+          "predicted_predicates": [
+            "K200908"
+          ],
+          "predicted_references": [
+            "K173784",
+            "K212660"
+          ],
+          "exact_relationships": true,
+          "review_count": 0,
+          "used_ocr": true,
+          "elapsed_seconds": 5.64,
+          "review_notes": []
+        },
+        {
+          "source_k_number": "K221887",
+          "true_positives": 1,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "reference_scores": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0
+          },
+          "predicted_predicates": [
+            "K190942"
+          ],
+          "predicted_references": [],
+          "exact_relationships": true,
+          "review_count": 0,
+          "used_ocr": true,
+          "elapsed_seconds": 3.54,
+          "review_notes": []
+        },
+        {
+          "source_k_number": "K230001",
+          "true_positives": 0,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "reference_scores": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0
+          },
+          "predicted_predicates": [],
+          "predicted_references": [],
+          "exact_relationships": true,
+          "review_count": 0,
+          "used_ocr": false,
+          "elapsed_seconds": 1.19,
+          "review_notes": []
+        },
+        {
+          "source_k_number": "K230857",
+          "true_positives": 2,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "reference_scores": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0
+          },
+          "predicted_predicates": [
+            "K180818",
+            "K221047"
+          ],
+          "predicted_references": [],
+          "exact_relationships": true,
+          "review_count": 0,
+          "used_ocr": false,
+          "elapsed_seconds": 4.7,
+          "review_notes": []
+        },
+        {
+          "source_k_number": "K232692",
+          "true_positives": 1,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "reference_scores": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0
+          },
+          "predicted_predicates": [
+            "K220227"
+          ],
+          "predicted_references": [],
+          "exact_relationships": true,
+          "review_count": 0,
+          "used_ocr": true,
+          "elapsed_seconds": 3.71,
+          "review_notes": []
+        }
+      ]
+    }
+  ],
+  "controlled_vision_check": {
+    "test": "controlled low-confidence O/0 substitution; source image unchanged",
+    "original": "K13O391",
+    "expected": "K130391",
+    "corrected": true,
+    "notes": [
+      "Page 1: K13O391 -> K130391; vision and strong OCR occurrence agree."
+    ]
+  }
+}

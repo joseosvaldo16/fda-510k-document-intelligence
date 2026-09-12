@@ -1,0 +1,329 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "surface": "report",
+    "title": "Healthcare Document Automation with Azure AI",
+    "description": "A healthcare regulatory workflow: purpose, implementation, results, and privacy safeguards.",
+    "generatedAt": "2026-09-12T20:23:28.552088+00:00",
+    "filters": [],
+    "cards": [],
+    "charts": [
+      {
+        "id": "native_text_volume",
+        "title": "Rules plus OCR performed best on this development sample",
+        "subtitle": "Same 13 PDFs and reviewed labels; not a held-out test.",
+        "headerMarkdown": "F1 combines precision and recall. Source validation held one LLM answer for review.",
+        "type": "bar",
+        "dataset": "comparison",
+        "sourceId": "evaluation_run",
+        "valueFormat": "percent",
+        "encodings": {
+          "x": {
+            "field": "method",
+            "type": "nominal",
+            "label": "Method"
+          },
+          "y": {
+            "field": "f1",
+            "type": "quantitative",
+            "label": "Predicate F1"
+          }
+        }
+      }
+    ],
+    "tables": [
+      {
+        "id": "document_audit",
+        "title": "Final rules plus OCR results by document",
+        "subtitle": "Predicate counts exclude four separately retained reference relationships. Complete result also checks relationship types.",
+        "dataset": "documents",
+        "sourceId": "evaluation_run",
+        "defaultSort": {
+          "field": "k_number",
+          "direction": "asc"
+        },
+        "columns": [
+          {
+            "field": "k_number",
+            "label": "510(k)",
+            "type": "text"
+          },
+          {
+            "field": "truth_predicates",
+            "label": "Expected references",
+            "format": "number"
+          },
+          {
+            "field": "candidate_predictions",
+            "label": "Suggestions",
+            "format": "number"
+          },
+          {
+            "field": "true_positives",
+            "label": "Correct",
+            "format": "number"
+          },
+          {
+            "field": "false_positives",
+            "label": "Incorrect",
+            "format": "number"
+          },
+          {
+            "field": "false_negatives",
+            "label": "Missed",
+            "format": "number"
+          },
+          {
+            "field": "status_correct",
+            "label": "Complete result",
+            "format": "number"
+          }
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "id": "evaluation_run",
+        "label": "Reviewed FDA development benchmark",
+        "query": {
+          "engine": "DuckDB",
+          "sql": "SELECT unnest(runs) AS run FROM read_json_auto('benchmarks/results.json')",
+          "description": "Paired comparison against visually reviewed labels in benchmarks/fda_predicates.json; PDF hashes verified.",
+          "tables_used": [
+            "benchmarks/results.json",
+            "benchmarks/fda_predicates.json"
+          ]
+        }
+      }
+    ],
+    "blocks": [
+      {
+        "id": "title",
+        "type": "markdown",
+        "body": "# Healthcare Document Automation with Azure AI"
+      },
+      {
+        "id": "overview",
+        "type": "markdown",
+        "body": "## Project overview\n\nMedical-device regulatory review involves finding information across long PDFs, tables, and scanned pages. This project automates one part of that work: identifying the existing devices cited for comparison in FDA 510(k) submissions and recording where each relationship appears.\n\nThe output includes device identifiers, relationship types, page numbers, supporting text, and review status. These records can support a searchable regulatory dataset or a document-review application. The intended benefit is less manual searching and easier verification; reviewer time savings have not been measured.\n\nOn a development sample of **13 public PDFs and 88 pages**, the default workflow found **all 21 reviewed predicate relationships and all four reference relationships**, with no extra matches. Live Azure OCR and LLM calls were tested. This is a healthcare regulatory automation prototype, using public documents rather than patient records; a HIPAA-compliant production deployment has not been established."
+      },
+      {
+        "id": "use_case",
+        "type": "markdown",
+        "body": "## The healthcare use case\n\nA **predicate** is an existing legally marketed device used for comparison in a 510(k) submission. A **K-number** identifies a submission. A document can name several predicates as well as reference devices that serve a different role. Keeping those distinctions matters when building a reliable device-reference dataset. See the [FDA's explanation](https://www.fda.gov/medical-devices/premarket-submissions-selecting-and-preparing-correct-submission/premarket-notification-510k).\n\nFor example, the workflow reads submission K213456 and records K160702 as its primary predicate, K080646 as an additional predicate, and two other devices as references. Each result points back to the document evidence. A reviewer can check the source instead of relying on an unexplained model answer.\n\nThe workflow supports information gathering. It does not determine substantial equivalence, recommend treatment, or make a regulatory decision."
+      },
+      {
+        "id": "dataset",
+        "type": "markdown",
+        "body": "## Dataset\n\nThe development sample contains **13 public FDA PDFs, totaling 88 pages**, with 3\u201313 pages per file. It includes device summaries, comparison tables, clearance letters, and indications-for-use forms. Files were selected because they downloaded successfully, so the sample is not representative of the full FDA archive.\n\n[The benchmark labels](benchmarks/fda_predicates.json) record source URLs, PDF hashes, reviewed page numbers, and expected relationships: **21 predicates and four reference devices**. Primary and additional predicates are retained separately. Devices labeled \u201creference,\u201d including \u201creference predicates,\u201d are stored as references and excluded from predicate-only scores. Two PDFs contain no numbered predicate references; this does not establish that the devices have no predicates.\n\nLabels were checked against rendered source pages before the LLM comparison. They are a single development review, not independently adjudicated ground truth. PDFs and full extraction outputs remain outside Git. The separate `scripts/download_reference_data.py` script downloads 100 metadata records from [openFDA](https://open.fda.gov/apis/device/510k/); that is not the benchmark corpus."
+      },
+      {
+        "id": "methods",
+        "type": "markdown",
+        "body": "## Workflow and methods\n\nThe workflow is: **PDF \u2192 page extraction \u2192 selective OCR \u2192 relationship matching \u2192 evidence validation \u2192 structured export**. It uses pretrained Azure models; no custom model was trained.\n\n1. **Read the PDF.** Extract page text with `pypdf`; try `pdfplumber` on pages with fewer than 40 characters.\n2. **Check for extraction problems.** Send empty or short pages and pages with malformed K-number patterns to Azure Document Intelligence. A text-heavy page can still need OCR.\n3. **Keep source detail.** Upload only the selected pages, preserve original page numbers, and retain Azure word-confidence scores. Table objects are not retained or scored.\n4. **Find relationships.** The default rules read predicate sections and tables, preserve multiple predicates, distinguish reference devices, and exclude the source document's own number. Whitespace inside identifiers can be joined; uncertain letters are not silently replaced.\n5. **Optionally use an LLM.** Azure OpenAI classifies relationships and returns page and line ranges. The program builds evidence directly from those source lines and checks the identifier and relationship label. Unsupported suggestions remain `ambiguous` for review.\n6. **Save results.** Pydantic records are written to JSONL and can be exported to CSV or Parquet with DuckDB. File hashes prevent repeat processing; `--force` reruns a recorded PDF.\n\n### Confidence-based OCR review\n\nWith `--matching llm`, K-number-like OCR words below **0.90 confidence** are checked against a rendered page image. Azure provides word confidence, not an independent score for each character. The thresholds are review settings, not calibrated accuracy guarantees.\n\nAn automatic correction requires agreement between the vision reading and another OCR occurrence at **0.95 confidence or higher**, plus a supported O/0 or I/l/1 character confusion. Otherwise the original text stays intact and affected relationships require review. Original OCR words and review notes are retained. Model confidence alone never authorizes a correction. A live controlled test corrected an injected `K13O391` to `K130391` using the original page image and a separate strong OCR occurrence; this does not measure correction accuracy on naturally occurring errors.\n\n### Tools and their roles\n\n| Component | Purpose |\n| --- | --- |\n| Python, pypdf, pdfplumber | Read PDFs and identify pages that need another extraction method. |\n| Azure Document Intelligence | Recover text from selected problem pages and provide word-confidence scores. |\n| Azure OpenAI, Pydantic | Produce structured model responses and validate their shape before checking source evidence. |\n| pypdfium2 | Render source pages for optional visual review of uncertain identifiers. |\n| DuckDB, JSONL, CSV, Parquet | Save typed results and make them available for analysis or downstream applications. |\n| Azure Identity | Authenticate cloud calls with tokens; live checks used the signed-in Azure CLI identity. |\n| pytest, Ruff, mypy | Check behavior, code quality, and Python types. |"
+      },
+      {
+        "id": "obstacles",
+        "type": "markdown",
+        "body": "## Obstacles and solutions\n\n- **Long lists:** section parsing now finds later entries that the original 100-character window missed.\n- **Several valid predicates:** each gets its own relationship instead of treating the whole document as ambiguous.\n- **Damaged embedded text:** malformed identifiers can trigger OCR even when a page has plenty of text.\n- **LLM evidence errors:** asking a model to rewrite a quote introduced small transcription changes. Returning source line ranges keeps evidence unchanged and makes validation direct.\n- **Remaining gaps:** new layouts, confidently wrong OCR, missing identifiers that do not trigger OCR, and unclear device roles still need broader testing. Generic keyword checks cannot prove a semantic relationship by themselves.\n- **Production operation:** failed attempts are currently considered seen unless forced. Concurrent storage, scheduled ingestion, and a hosted deployment are not complete.\n\nEmbeddings were not tested. The current task needs exact identifiers and explicit relationship labels; semantic retrieval would be a separate experiment for finding relevant sections in a larger collection."
+      },
+      {
+        "id": "results",
+        "type": "markdown",
+        "body": "## Results and validation\n\nThe September 12, 2026 comparison uses the same reviewed answers for every method. Predicate metrics count distinct source-to-predicate relationships; references are scored separately. Full-document correctness requires all relationship identities and types to agree, with no unresolved review items.\n\n| Method | Correct / suggested | Found / expected | F1 | Complete documents |\n| --- | --- | --- | --- | --- |\n| Original matcher, local text | 13 / 20 (65%) | 13 / 21 (61.9%) | 0.634 | 4 / 13 |\n| Improved rules, local text | 18 / 18 (100%) | 18 / 21 (85.7%) | 0.923 | 11 / 13 |\n| **Improved rules + Azure OCR** | **21 / 21 (100%)** | **21 / 21 (100%)** | **1.000** | **13 / 13** |\n| LLM + the same Azure text | 20 / 20 (100%) | 20 / 21 (95.2%) | 0.976 | 12 / 13 |\n\nBoth improved approaches also recovered all four reference relationships without false reference matches. One LLM answer failed source-evidence validation and was held for review. Rules plus OCR remain the default because they performed best on this sample; the LLM option is available for further evaluation.\n\nThese are **development results, not held-out performance**. Parsing rules were improved using this sample, and the LLM prompt was revised after an initial run. The saved comparison reports the final implementations. A larger, independently reviewed test set is needed before claiming general accuracy.\n\n[Results by document](benchmarks/results.json) and [the evaluation script](benchmarks/evaluate.py) make the revised definitions and calculations inspectable.\n\n### Why character counts are not a quality measure\n\nReturned text can contain incorrect identifiers, broken tables, or missing sections. Character counts only help route weak pages. The benchmark checks relationship identities and types, not overall transcription, reading order, table-cell accuracy, or every device field.",
+        "sourceId": "evaluation_run"
+      },
+      {
+        "id": "audit_table",
+        "type": "table",
+        "tableId": "document_audit"
+      },
+      {
+        "id": "privacy",
+        "type": "markdown",
+        "body": "## Privacy, security, and HIPAA\n\nThe dataset consists of public FDA regulatory documents, not patient records. Using healthcare-related data does not itself demonstrate HIPAA compliance. The current project demonstrates data-flow awareness and several technical safeguards, but it has not been approved for protected health information (PHI).\n\n**Data flow:** PDFs are read locally. Azure OCR receives selected problem pages by default. Optional LLM review sends relevant page text and, when needed, rendered page images to Azure OpenAI. Results and supporting evidence are saved locally. The local-only option disables both cloud paths.\n\n**Implemented safeguards:** live cloud calls used token authentication without storing service keys. Local configuration, downloaded PDFs, and full extraction outputs are excluded from Git. Original OCR evidence and review notes are preserved, and unsupported model answers are marked for review. These controls help protect credentials and trace decisions; they do not anonymize or encrypt stored evidence. There is no automatic PHI redaction.\n\n**Before handling PHI:** the organization must confirm applicable business associate agreements (BAAs), covered services and permitted data flows, and complete a risk assessment. The deployment also needs verified user access controls, storage protection, security audit logging, retention and deletion rules, and incident and recovery procedures. The current processing log is not a complete security audit trail, and the function key is not a user-level access or session system. These items have not been established for this project. [HHS cloud guidance](https://www.hhs.gov/hipaa/for-professionals/special-topics/health-information-technology/cloud-computing/index.html)\n\nAzure's HIPAA offering does not automatically make an application compliant. The application owner remains responsible for its configuration and operation. No claim is made here that the existing Azure accounts or this workflow have a verified BAA-covered deployment. [Microsoft HIPAA guidance](https://learn.microsoft.com/en-us/azure/compliance/offerings/offering-hipaa-us)"
+      },
+      {
+        "id": "scope",
+        "type": "markdown",
+        "body": "## Engineering scope and next milestone\n\nThis project demonstrates healthcare document automation, Python backend workflows, live AI API integration, structured output validation, OCR error handling, and reproducible evaluation. It includes regression coverage for relationship parsing, source-evidence checks, OCR correction safeguards, and command-line behavior. The implementation passed 23 tests, Ruff, and mypy in the development environment.\n\nThe working entry point is a command-line pipeline. An Azure Functions reprocessing endpoint is included, but hosted deployment and scheduled FDA ingestion are unfinished. There is no user-facing application, TypeScript/Node backend, or measured production traffic. Latency, cost per document, and reviewer time savings still need a dedicated evaluation.\n\nThe next milestone is a hosted review workflow tested with public or synthetic documents: authenticated reviewer access, durable storage, security audit events, controlled retention, and load and failure testing. A larger independently reviewed test set should measure general accuracy before deployment claims are made. PHI use would then require the separate contractual and operational review described above."
+      }
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "generatedAt": "2026-09-12T20:23:28.552088+00:00",
+    "status": "ready",
+    "datasets": {
+      "metrics": [
+        {
+          "documents": 13,
+          "candidate_precision": 1,
+          "candidate_recall": 1,
+          "candidate_f1": 1,
+          "document_status_accuracy": 1
+        }
+      ],
+      "documents": [
+        {
+          "k_number": "K102429",
+          "truth_predicates": 2,
+          "candidate_predictions": 2,
+          "true_positives": 2,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "status_correct": 1
+        },
+        {
+          "k_number": "K111372",
+          "truth_predicates": 3,
+          "candidate_predictions": 3,
+          "true_positives": 3,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "status_correct": 1
+        },
+        {
+          "k_number": "K134031",
+          "truth_predicates": 4,
+          "candidate_predictions": 4,
+          "true_positives": 4,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "status_correct": 1
+        },
+        {
+          "k_number": "K140814",
+          "truth_predicates": 3,
+          "candidate_predictions": 3,
+          "true_positives": 3,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "status_correct": 1
+        },
+        {
+          "k_number": "K170381",
+          "truth_predicates": 1,
+          "candidate_predictions": 1,
+          "true_positives": 1,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "status_correct": 1
+        },
+        {
+          "k_number": "K180583",
+          "truth_predicates": 1,
+          "candidate_predictions": 1,
+          "true_positives": 1,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "status_correct": 1
+        },
+        {
+          "k_number": "K213456",
+          "truth_predicates": 2,
+          "candidate_predictions": 2,
+          "true_positives": 2,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "status_correct": 1
+        },
+        {
+          "k_number": "K220001",
+          "truth_predicates": 0,
+          "candidate_predictions": 0,
+          "true_positives": 0,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "status_correct": 1
+        },
+        {
+          "k_number": "K221537",
+          "truth_predicates": 1,
+          "candidate_predictions": 1,
+          "true_positives": 1,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "status_correct": 1
+        },
+        {
+          "k_number": "K221887",
+          "truth_predicates": 1,
+          "candidate_predictions": 1,
+          "true_positives": 1,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "status_correct": 1
+        },
+        {
+          "k_number": "K230001",
+          "truth_predicates": 0,
+          "candidate_predictions": 0,
+          "true_positives": 0,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "status_correct": 1
+        },
+        {
+          "k_number": "K230857",
+          "truth_predicates": 2,
+          "candidate_predictions": 2,
+          "true_positives": 2,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "status_correct": 1
+        },
+        {
+          "k_number": "K232692",
+          "truth_predicates": 1,
+          "candidate_predictions": 1,
+          "true_positives": 1,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "status_correct": 1
+        }
+      ],
+      "comparison": [
+        {
+          "method": "Original rules",
+          "f1": 0.6341463414634146,
+          "precision": 0.65,
+          "recall": 0.6190476190476191
+        },
+        {
+          "method": "Improved rules",
+          "f1": 0.9230769230769231,
+          "precision": 1.0,
+          "recall": 0.8571428571428571
+        },
+        {
+          "method": "Rules + OCR",
+          "f1": 1.0,
+          "precision": 1.0,
+          "recall": 1.0
+        },
+        {
+          "method": "LLM + OCR",
+          "f1": 0.975609756097561,
+          "precision": 1.0,
+          "recall": 0.9523809523809523
+        }
+      ]
+    }
+  },
+  "sources": [
+    {
+      "id": "evaluation_run",
+      "query": {
+        "engine": "DuckDB",
+        "sql": "SELECT unnest(runs) AS run FROM read_json_auto('benchmarks/results.json')",
+        "description": "Paired comparison against visually reviewed labels in benchmarks/fda_predicates.json; PDF hashes verified.",
+        "tables_used": [
+          "benchmarks/results.json",
+          "benchmarks/fda_predicates.json"
+        ]
+      }
+    }
+  ]
+}

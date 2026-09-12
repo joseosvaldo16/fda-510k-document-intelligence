@@ -1,0 +1,9 @@
+{
+    "azureFunctions.deploySubpath": ".",
+    "azureFunctions.scmDoBuildDuringDeployment": true,
+    "azureFunctions.pythonVenv": "/Users/josevera/miniconda3/envs/mlenv",
+    "azureFunctions.projectLanguage": "Python",
+    "azureFunctions.projectRuntime": "~4",
+    "debug.internalConsoleOptions": "neverOpen",
+    "python.defaultInterpreterPath": "/Users/josevera/miniconda3/envs/mlenv/bin/python"
+}

@@ -1,14 +1,24 @@
-# FDA 510(k) Document Intelligence
+# Healthcare Document Automation with Azure AI
 
-A Python project that finds predicate-device references in public FDA PDFs and saves each result with its page number and supporting text.
+A working Python workflow that turns public FDA medical-device documents into structured records, with source evidence for review. It combines PDF extraction, Azure Document Intelligence, and optional Azure OpenAI review to handle inconsistent document layouts and reading errors.
 
-A **predicate** is an existing legally marketed device used for comparison in a 510(k) submission. A **K-number** identifies a submission. This project makes those references easier to find and check; it does not decide whether devices are equivalent. See the [FDA's explanation](https://www.fda.gov/medical-devices/premarket-submissions-selecting-and-preparing-correct-submission/premarket-notification-510k).
+## Project overview
 
-The project combines PDF parsing, Azure OCR, rule-based matching, and an optional LLM review. It uses pretrained models; no custom model has been trained.
+Medical-device regulatory review involves finding information across long PDFs, tables, and scanned pages. This project automates one part of that work: identifying the existing devices cited for comparison in FDA 510(k) submissions and recording where each relationship appears.
 
-## Goal and dataset
+The output includes device identifiers, relationship types, page numbers, supporting text, and review status. These records can support a searchable regulatory dataset or a document-review application. The intended benefit is less manual searching and easier verification; reviewer time savings have not been measured.
 
-The goal is to turn references buried in PDFs into searchable relationships with evidence a reviewer can inspect.
+On a development sample of **13 public PDFs and 88 pages**, the default workflow found **all 21 reviewed predicate relationships and all four reference relationships**, with no extra matches. Live Azure OCR and LLM calls were tested. This is a healthcare regulatory automation prototype, using public documents rather than patient records; a HIPAA-compliant production deployment has not been established.
+
+## The healthcare use case
+
+A **predicate** is an existing legally marketed device used for comparison in a 510(k) submission. A **K-number** identifies a submission. A document can name several predicates as well as reference devices that serve a different role. Keeping those distinctions matters when building a reliable device-reference dataset. See the [FDA's explanation](https://www.fda.gov/medical-devices/premarket-submissions-selecting-and-preparing-correct-submission/premarket-notification-510k).
+
+For example, the workflow reads submission K213456 and records K160702 as its primary predicate, K080646 as an additional predicate, and two other devices as references. Each result points back to the document evidence. A reviewer can check the source instead of relying on an unexplained model answer.
+
+The workflow supports information gathering. It does not determine substantial equivalence, recommend treatment, or make a regulatory decision.
+
+## Dataset
 
 The development sample contains **13 public FDA PDFs, totaling 88 pages**, with 3–13 pages per file. It includes device summaries, comparison tables, clearance letters, and indications-for-use forms. Files were selected because they downloaded successfully, so the sample is not representative of the full FDA archive.
 
@@ -16,7 +26,9 @@ The development sample contains **13 public FDA PDFs, totaling 88 pages**, with 
 
 Labels were checked against rendered source pages before the LLM comparison. They are a single development review, not independently adjudicated ground truth. PDFs and full extraction outputs remain outside Git. The separate `scripts/download_reference_data.py` script downloads 100 metadata records from [openFDA](https://open.fda.gov/apis/device/510k/); that is not the benchmark corpus.
 
-## How it works
+## Workflow and methods
+
+The workflow is: **PDF → page extraction → selective OCR → relationship matching → evidence validation → structured export**. It uses pretrained Azure models; no custom model was trained.
 
 1. **Read the PDF.** Extract page text with `pypdf`; try `pdfplumber` on pages with fewer than 40 characters.
 2. **Check for extraction problems.** Send empty or short pages and pages with malformed K-number patterns to Azure Document Intelligence. A text-heavy page can still need OCR.
@@ -31,7 +43,30 @@ With `--matching llm`, K-number-like OCR words below **0.90 confidence** are che
 
 An automatic correction requires agreement between the vision reading and another OCR occurrence at **0.95 confidence or higher**, plus a supported O/0 or I/l/1 character confusion. Otherwise the original text stays intact and affected relationships require review. Original OCR words and review notes are retained. Model confidence alone never authorizes a correction. A live controlled test corrected an injected `K13O391` to `K130391` using the original page image and a separate strong OCR occurrence; this does not measure correction accuracy on naturally occurring errors.
 
-## What the evaluation shows
+### Tools and their roles
+
+| Component | Purpose |
+| --- | --- |
+| Python, pypdf, pdfplumber | Read PDFs and identify pages that need another extraction method. |
+| Azure Document Intelligence | Recover text from selected problem pages and provide word-confidence scores. |
+| Azure OpenAI, Pydantic | Produce structured model responses and validate their shape before checking source evidence. |
+| pypdfium2 | Render source pages for optional visual review of uncertain identifiers. |
+| DuckDB, JSONL, CSV, Parquet | Save typed results and make them available for analysis or downstream applications. |
+| Azure Identity | Authenticate cloud calls with tokens; live checks used the signed-in Azure CLI identity. |
+| pytest, Ruff, mypy | Check behavior, code quality, and Python types. |
+
+## Obstacles and solutions
+
+- **Long lists:** section parsing now finds later entries that the original 100-character window missed.
+- **Several valid predicates:** each gets its own relationship instead of treating the whole document as ambiguous.
+- **Damaged embedded text:** malformed identifiers can trigger OCR even when a page has plenty of text.
+- **LLM evidence errors:** asking a model to rewrite a quote introduced small transcription changes. Returning source line ranges keeps evidence unchanged and makes validation direct.
+- **Remaining gaps:** new layouts, confidently wrong OCR, missing identifiers that do not trigger OCR, and unclear device roles still need broader testing. Generic keyword checks cannot prove a semantic relationship by themselves.
+- **Production operation:** failed attempts are currently considered seen unless forced. Concurrent storage, scheduled ingestion, and a hosted deployment are not complete.
+
+Embeddings were not tested. The current task needs exact identifiers and explicit relationship labels; semantic retrieval would be a separate experiment for finding relevant sections in a larger collection.
+
+## Results and validation
 
 The September 12, 2026 comparison uses the same reviewed answers for every method. Predicate metrics count distinct source-to-predicate relationships; references are scored separately. Full-document correctness requires all relationship identities and types to agree, with no unresolved review items.
 
@@ -46,32 +81,31 @@ Both improved approaches also recovered all four reference relationships without
 
 These are **development results, not held-out performance**. Parsing rules were improved using this sample, and the LLM prompt was revised after an initial run. The saved comparison reports the final implementations. A larger, independently reviewed test set is needed before claiming general accuracy.
 
-The earlier 75% figure is superseded. The old review missed three predicates in K140814 and mixed reference predicates into the predicate total. [Results by document](benchmarks/results.json) and [the evaluation script](benchmarks/evaluate.py) make the revised definitions and calculations inspectable.
+[Results by document](benchmarks/results.json) and [the evaluation script](benchmarks/evaluate.py) make the revised definitions and calculations inspectable.
 
 ### Why character counts are not a quality measure
 
 Returned text can contain incorrect identifiers, broken tables, or missing sections. Character counts only help route weak pages. The benchmark checks relationship identities and types, not overall transcription, reading order, table-cell accuracy, or every device field.
 
-## Challenges and current limits
+## Privacy, security, and HIPAA
 
-- **Long lists:** section parsing now finds later entries that the original 100-character window missed.
-- **Several valid predicates:** each gets its own relationship instead of treating the whole document as ambiguous.
-- **Damaged embedded text:** malformed identifiers can trigger OCR even when a page has plenty of text.
-- **LLM evidence errors:** asking a model to rewrite a quote introduced small transcription changes. Returning source line ranges keeps evidence unchanged and makes validation direct.
-- **Remaining gaps:** new layouts, confidently wrong OCR, missing identifiers that do not trigger OCR, and unclear device roles still need broader testing. Generic keyword checks cannot prove a semantic relationship by themselves.
-- **Production operation:** failed attempts are currently considered seen unless forced. Concurrent storage, scheduled ingestion, and a hosted deployment are not complete.
+The dataset consists of public FDA regulatory documents, not patient records. Using healthcare-related data does not itself demonstrate HIPAA compliance. The current project demonstrates data-flow awareness and several technical safeguards, but it has not been approved for protected health information (PHI).
 
-Embeddings were not tested. The current task needs exact identifiers and explicit relationship labels; semantic retrieval would be a separate experiment for finding relevant sections in a larger collection.
+**Data flow:** PDFs are read locally. Azure OCR receives selected problem pages by default. Optional LLM review sends relevant page text and, when needed, rendered page images to Azure OpenAI. Results and supporting evidence are saved locally. The local-only option disables both cloud paths.
 
-## Privacy and HIPAA
+**Implemented safeguards:** live cloud calls used token authentication without storing service keys. Local configuration, downloaded PDFs, and full extraction outputs are excluded from Git. Original OCR evidence and review notes are preserved, and unsupported model answers are marked for review. These controls help protect credentials and trace decisions; they do not anonymize or encrypt stored evidence. There is no automatic PHI redaction.
 
-The project uses public regulatory documents, not a patient-record dataset. This work does **not** establish HIPAA compliance. HIPAA obligations depend on the data and the organization's role; see [HHS guidance](https://www.hhs.gov/hipaa/for-professionals/covered-entities/index.html).
+**Before handling PHI:** the organization must confirm applicable business associate agreements (BAAs), covered services and permitted data flows, and complete a risk assessment. The deployment also needs verified user access controls, storage protection, security audit logging, retention and deletion rules, and incident and recovery procedures. The current processing log is not a complete security audit trail, and the function key is not a user-level access or session system. These items have not been established for this project. [HHS cloud guidance](https://www.hhs.gov/hipaa/for-professionals/special-topics/health-information-technology/cloud-computing/index.html)
 
-Azure OCR uploads selected pages by default. LLM mode also sends relevant page text and, when needed, page images to the configured Azure OpenAI service. `--local-only` disables cloud processing and cannot be combined with LLM matching.
+Azure's HIPAA offering does not automatically make an application compliant. The application owner remains responsible for its configuration and operation. No claim is made here that the existing Azure accounts or this workflow have a verified BAA-covered deployment. [Microsoft HIPAA guidance](https://learn.microsoft.com/en-us/azure/compliance/offerings/offering-hipaa-us)
 
-Live calls used Azure token authentication without storing service keys. Downloaded documents, local configuration, and full audit outputs are excluded from Git. Audit evidence is plain text; Git exclusions and file hashes do not encrypt or anonymize data. There is no automatic PHI redaction.
+## Engineering scope and next milestone
 
-Handling protected health information would require a separately reviewed deployment with appropriate agreements, risk assessment, access controls, storage protection, retention, and incident procedures. Those controls are not established here. [HHS cloud guidance](https://www.hhs.gov/hipaa/for-professionals/special-topics/health-information-technology/cloud-computing/index.html)
+This project demonstrates healthcare document automation, Python backend workflows, live AI API integration, structured output validation, OCR error handling, and reproducible evaluation. It includes regression coverage for relationship parsing, source-evidence checks, OCR correction safeguards, and command-line behavior. The implementation passed 23 tests, Ruff, and mypy in the development environment.
+
+The working entry point is a command-line pipeline. An Azure Functions reprocessing endpoint is included, but hosted deployment and scheduled FDA ingestion are unfinished. There is no user-facing application, TypeScript/Node backend, or measured production traffic. Latency, cost per document, and reviewer time savings still need a dedicated evaluation.
+
+The next milestone is a hosted review workflow tested with public or synthetic documents: authenticated reviewer access, durable storage, security audit events, controlled retention, and load and failure testing. A larger independently reviewed test set should measure general accuracy before deployment claims are made. PHI use would then require the separate contractual and operational review described above.
 
 ## Run with conda
 
@@ -112,11 +146,3 @@ PYTHONPATH=src conda run -n mlenv python -m pytest -q
 conda run -n mlenv python -m ruff check .
 conda run -n mlenv python -m mypy src/fda510k
 ```
-
-## Skills demonstrated and next steps
-
-The implementation demonstrates PDF processing, OCR routing, structured LLM output, evidence validation, error analysis, typed Python records, and reproducible evaluation. The comparison separates extraction problems from matching problems and tests whether a more complex method adds value.
-
-Next: add independently reviewed documents with new layouts and real scans, measure OCR review precision and correction coverage, and compare methods on a held-out set. Core code is in `src/fda510k/`, tests in `tests/`, and labels and evaluation tools in `benchmarks/`.
-
-`function_app.py` provides a function-key-protected reprocessing endpoint for server-accessible PDFs. Its timer logs a trigger; automated FDA ingestion and verified deployment remain future work.

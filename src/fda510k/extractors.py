@@ -12,7 +12,9 @@ from .models import ExtractionResult
 class DocumentIntelligenceClient(Protocol):
     """Small adapter boundary around Azure Document Intelligence."""
 
-    def extract_layout(self, content: bytes) -> dict[int, str]: ...
+    def extract_layout(
+        self, content: bytes, page_numbers: list[int] | None = None
+    ) -> dict[int, str]: ...
 
 
 class PdfExtractor:
@@ -31,7 +33,7 @@ class PdfExtractor:
         weak = [page for page, text in text_by_page.items() if len(text) < 40]
         used_di = False
         if weak and self.document_intelligence:
-            layout_text = self.document_intelligence.extract_layout(content)
+            layout_text = self.document_intelligence.extract_layout(content, page_numbers=weak)
             text_by_page.update({page: layout_text[page] for page in weak if layout_text.get(page)})
             used_di = True
         extractor = "azure-layout" if used_di else "pypdf/pdfplumber"
